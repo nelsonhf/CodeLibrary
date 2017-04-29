@@ -4,8 +4,8 @@ CurrentProject=Code Library\Graph.vpj
 Code Library\Graph.vpj=,Debug|AnyCPU
 GraphTest\GraphTest.vpj=,Debug|AnyCPU
 [ProjectDates]
-Code Library\Graph.csproj=20170429220553222
-GraphTest\GraphTest.csproj=20161101043149963
+Code Library\Graph.csproj=20170429221605082
+GraphTest\GraphTest.csproj=20170429221605436
 [TreeExpansion2]
 -@ Code Library\Graph.csproj
   + Properties
