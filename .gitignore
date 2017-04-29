@@ -52,3 +52,9 @@ Temporary Items
 
 # Result of unit tests
 **/TestResults/**
+
+# Internal SlickEdit files (modified too often)
+*.vtg
+*.vpw
+*.vpwhist
+
