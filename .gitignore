@@ -45,6 +45,16 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Files compiled from source
+**/obj/**
+**/bin/**
+
+# Result of unit tests
+**/TestResults/**
+
+# Internal SlickEdit files (modified too often)
 *.vtg
 *.vpw
 *.vpwhist
+
