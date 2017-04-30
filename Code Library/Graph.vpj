@@ -5,12 +5,12 @@
     TemplateName="Microsoft Visual Studio  &gt;= 2010 C#"
     WorkingDir="."
     AssociatedFile="Graph.csproj"
-    AssociatedFileType="microsoft visual studio csharp"
-    VCSProject="Git:">
+    AssociatedFileType="microsoft visual studio csharp">
     <Config
-        Name="Debug|AnyCPU"
+        Name="Release|AnyCPU"
         OutputFile=""
-        CompilerConfigName="">
+        CompilerConfigName=""
+        ObjectDir="bin\Release\">
         <Includes>
             <Include Dir="%(INCLUDE)"/>
         </Includes>
@@ -66,9 +66,10 @@
         </Menu>
     </Config>
     <Config
-        Name="Release|AnyCPU"
+        Name="Debug|AnyCPU"
         OutputFile=""
-        CompilerConfigName="">
+        CompilerConfigName=""
+        ObjectDir="bin\Debug\">
         <Includes>
             <Include Dir="%(INCLUDE)"/>
         </Includes>
