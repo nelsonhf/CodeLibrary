@@ -5,8 +5,40 @@ using CodeLibrary;
 
 namespace GraphTest
 {
+    /// <summary>A class to test where the id is a string</summary>
+    public class StringWId : IIdentifiable<string>
+    {
+        private string m_content;
+        public string Id
+        {
+            get { return m_content; }
+        }
+        public StringWId(string name)
+        {
+            m_content = name;
+        }
+    }
+
+    /// <summary>A class to test where the id is an integer</summary>
+    public class NumberWId : IIdentifiable<int>
+    {
+        private int m_id;
+        private double m_aNumber;
+        private string m_something;
+        public int Id
+        {
+            get { return m_id; }
+        }
+        public NumberWId(int id, double number, string something)
+        {
+            m_id = id;
+            m_aNumber = number;
+            m_something = something;
+        }
+    }
+
     [TestClass]
-    public class NodeTest
+    public class NodeTTest
     {
         /// <summary>A test for the constructor</summary>
         /// <remarks>
@@ -14,79 +46,16 @@ namespace GraphTest
         /// Expected: Normal object
         /// </remarks>
         [TestMethod]
-        public void ConstructorTest_NameNoSubNode_Success()
+        public void ConstructorTest_NoSubNode_Success()
         {
             // Setup
-            var name = "Root";
+            var swi = new StringWId("Root");
 
             // Expected Values
-            var expectedObjectType = typeof(Node);
+            var expectedObjectType = typeof(Node<StringWId, string>);
 
             // Actual Test
-            var node = new Node(name);
-
-            // Verification
-            Assert.AreEqual<Type>(expectedObjectType, node.GetType(), "Wrong type constructed");
-        }
-
-        /// <summary>A test for the constructor</summary>
-        /// <remarks>
-        /// Test: Construct with name only; name has space
-        /// Expected: Normal object
-        /// </remarks>
-        [TestMethod]
-        public void ConstructorTest_NameHasSpace_Success()
-        {
-            // Setup
-            var name = "Root Node";
-
-            // Expected Values
-            var expectedObjectType = typeof(Node);
-
-            // Actual Test
-            var node = new Node(name);
-
-            // Verification
-            Assert.AreEqual<Type>(expectedObjectType, node.GetType(), "Wrong type constructed");
-        }
-
-        /// <summary>A test for the constructor</summary>
-        /// <remarks>
-        /// Test: Construct with name only; name has punctuation
-        /// Expected: Normal object
-        /// </remarks>
-        [TestMethod]
-        public void ConstructorTest_NameHasPunctuation_Success()
-        {
-            // Setup
-            var name = "Root Node!";
-
-            // Expected Values
-            var expectedObjectType = typeof(Node);
-
-            // Actual Test
-            var node = new Node(name);
-
-            // Verification
-            Assert.AreEqual<Type>(expectedObjectType, node.GetType(), "Wrong type constructed");
-        }
-
-        /// <summary>A test for the constructor</summary>
-        /// <remarks>
-        /// Test: Construct with name only; name has non-printable character
-        /// Expected: Normal object
-        /// </remarks>
-        [TestMethod]
-        public void ConstructorTest_NameHasNonPrintable_Success()
-        {
-            // Setup
-            var name = "Root Node\01";
-
-            // Expected Values
-            var expectedObjectType = typeof(Node);
-
-            // Actual Test
-            var node = new Node(name);
+            var node = new Node<StringWId, string>(swi);
 
             // Verification
             Assert.AreEqual<Type>(expectedObjectType, node.GetType(), "Wrong type constructed");
@@ -98,17 +67,18 @@ namespace GraphTest
         /// Expected: Normal object
         /// </remarks>
         [TestMethod]
-        public void ConstructorTest_NameOneSubNode_Success()
+        public void ConstructorTest_OneSubNode_Success()
         {
             // Setup
-            var name = "Root Node";
-            var subNode1 = new Node("Sub-Node");
+            var swi1 = new StringWId("Root Node");
+            var swi2 = new StringWId("Sub-Node");
+            var subNode1 = new Node<StringWId, string>(swi2);
 
             // Expected Values
-            var expectedObjectType = typeof(Node);
+            var expectedObjectType = typeof(Node<StringWId, string>);
 
             // Actual Test
-            var node = new Node(name, subNode1);
+            var node = new Node<StringWId, string>(swi1, subNode1);
 
             // Verification
             Assert.AreEqual<Type>(node.GetType(), expectedObjectType, "Wrong type constructed");
@@ -120,35 +90,15 @@ namespace GraphTest
         /// </remarks>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException), "Didn't detect null name")]
-        public void ConstructorTest_NullName_Exception()
+        public void ConstructorTest_NullNode_Exception()
         {
             // Setup
-            string name = null;
+            StringWId swi = null;
 
             // No Expected Values (should throw exception)
 
             // Actual Test
-            var node = new Node(name);
-
-            // No Verification (ExpectedException should take care of it)
-        }
-
-        /// <summary>A test for the constructor</summary>
-        /// <remarks>
-        /// Test: Construct with empty name
-        /// Expected: Exception ArgumentException
-        /// </remarks>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Didn't detect empty name")]
-        public void ConstructorTest_EmptyName_Exception()
-        {
-            // Setup
-            var name = string.Empty;
-
-            // No Expected Values (should throw exception)
-
-            // Actual Test
-            var node = new Node(name);
+            var node = new Node<StringWId, string>(swi);
 
             // No Verification (ExpectedException should take care of it)
         }
@@ -162,13 +112,13 @@ namespace GraphTest
         public void ConstructorTest_NullSubNode_Exception()
         {
             // Setup
-            var name = "Root Node";
-            Node subNode = null;
+            var swi = new StringWId("Root Node");
+            Node<StringWId, string> subNode = null;
 
             // No Expected Values (should throw exception)
 
             // Actual Test
-            var node = new Node(name, subNode);
+            var node = new Node<StringWId, string>(swi, subNode);
 
             // No Verification (ExpectedException should take care of it)
         }
@@ -183,14 +133,14 @@ namespace GraphTest
         public void ConstructorTest_NullFirstSubNode_Exception()
         {
             // Setup
-            var name = "Root Node";
-            Node subNode1 = null;
-            var subNode2 = new Node("Sub-Node 2");
+            var swi = new StringWId("Root Node");
+            Node<StringWId, string> subNode1 = null;
+            var subNode2 = new Node<StringWId, string>(new StringWId("Sub-Node 2"));
 
             // No Expected Values (should throw exception)
 
             // Actual Test
-            var node = new Node(name, subNode1, subNode2);
+            var node = new Node<StringWId, string>(swi, subNode1, subNode2);
 
             // No Verification (ExpectedException should take care of it)
         }
@@ -205,37 +155,60 @@ namespace GraphTest
         public void ConstructorTest_NullSecondSubNode_Exception()
         {
             // Setup
-            var name = "Root Node";
-            var subNode1 = new Node("Sub-Node 1");
-            Node subNode2 = null;
+            var swi = new StringWId("Root Node");
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            Node<StringWId, string> subNode2 = null;
 
             // No Expected Values (should throw exception)
 
             // Actual Test
-            var node = new Node(name, subNode1, subNode2);
+            var node = new Node<StringWId, string>(swi, subNode1, subNode2);
 
             // No Verification (ExpectedException should take care of it)
         }
 
-        /// <summary>A test for Name</summary>
+        /// <summary>A test for Id</summary>
         /// <remarks>
-        /// Test: Property Name
+        /// Test: Property Id (where it is a string)
         /// Expected: Name set in the constructor
         /// </remarks>
         [TestMethod]
-        public void NameTest_Normal_GoodResult()
+        public void IdTest_StringNormal_GoodResult()
         {
             // Setup
-            var name = "NodeName";
+            var idForTest = "NodeName";
+            var swi = new StringWId(idForTest);
 
             // Expected Values
-            var expectedName = name;
+            var expectedId = idForTest;
 
             // Actual Test
-            var node = new Node(name);
+            var node = new Node<StringWId, string>(swi);
 
             // Verification
-            Assert.AreEqual<string>(expectedName, name, "Property Name returned wrong value");
+            Assert.AreEqual<string>(expectedId, node.Id, "Property Id returned wrong value");
+        }
+
+        /// <summary>A test for Id</summary>
+        /// <remarks>
+        /// Test: Property Id (where it is an integer)
+        /// Expected: Name set in the constructor
+        /// </remarks>
+        [TestMethod]
+        public void IdTest_IntNormal_GoodResult()
+        {
+            // Setup
+            var idForTest = 999;
+            var nwi = new NumberWId(idForTest, 123.456, "something");
+
+            // Expected Values
+            var expectedId = idForTest;
+
+            // Actual Test
+            var node = new Node<NumberWId, int>(nwi);
+
+            // Verification
+            Assert.AreEqual<int>(expectedId, node.Id, "Property Id returned wrong value");
         }
 
         /// <summary>A test for NodesCount</summary>
@@ -247,8 +220,8 @@ namespace GraphTest
         public void NodesCountTest_NoSubNodes_GoodResult()
         {
             // Setup
-            var name = "NodeName";
-            var node = new Node(name);
+            var swi = new StringWId("NodeName");
+            var node = new Node<StringWId, string>(swi);
 
             // Expected Values
             int expectedNodeCount = 0;
@@ -266,12 +239,12 @@ namespace GraphTest
         /// Expected: 1
         /// </remarks>
         [TestMethod]
-        public void NodesCountTest_OneSubNodes_GoodResult()
+        public void NodesCountTest_OneSubNode_GoodResult()
         {
             // Setup
-            var name = "NodeName";
-            var subNode1 = new Node("Sub-Node 1");
-            var node = new Node(name, subNode1);
+            var swi = new StringWId("NodeName");
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            var node = new Node<StringWId, string>(swi, subNode1);
 
             // Expected Values
             int expectedNodeCount = 1;
@@ -292,11 +265,11 @@ namespace GraphTest
         public void NodesCountTest_ThreeSubNodes_GoodResult()
         {
             // Setup
-            var name = "NodeName";
-            var subNode1 = new Node("Sub-Node 1");
-            var subNode2 = new Node("Sub-Node 2");
-            var subNode3 = new Node("Sub-Node 3");
-            var node = new Node(name, subNode1, subNode2, subNode3);
+            var swi = new StringWId("NodeName");
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            var subNode2 = new Node<StringWId, string>(new StringWId("Sub-Node 2"));
+            var subNode3 = new Node<StringWId, string>(new StringWId("Sub-Node 3"));
+            var node = new Node<StringWId, string>(swi, subNode1, subNode2, subNode3);
 
             // Expected Values
             int expectedNodeCount = 3;
@@ -318,9 +291,9 @@ namespace GraphTest
         public void AddTest_NullSubNode_Exception()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
-            Node subNode = null;
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
+            Node<StringWId, string> subNode = null;
 
             // No Expected Values (should throw exception)
 
@@ -340,10 +313,10 @@ namespace GraphTest
         public void AddTest_NullFirstSubNode_Exception()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
-            Node subNode1 = null;
-            var subNode2 = new Node("Sub-Node 2");
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
+            Node<StringWId, string> subNode1 = null;
+            var subNode2 = new Node<StringWId, string>(new StringWId("Sub-Node 2"));
 
             // No Expected Values (should throw exception)
 
@@ -363,10 +336,10 @@ namespace GraphTest
         public void AddTest_NullSecondSubNode_Exception()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
-            var subNode1 = new Node("Sub-Node 1");
-            Node subNode2 = null;
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            Node<StringWId, string> subNode2 = null;
 
             // No Expected Values (should throw exception)
 
@@ -385,9 +358,9 @@ namespace GraphTest
         public void AddTest_RepeatedSingleNode_GoodResultNoRepetition()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
-            var subNode1 = new Node("Sub-Node 1");
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
 
             // Expected Values
             int expectedNodeCount = 1;
@@ -397,8 +370,8 @@ namespace GraphTest
             node.Add(subNode1);
 
             // Verification
-            Assert.IsNotNull(node[subNode1.Name], "Sub-node one not added");
-            Assert.AreEqual<Node>(subNode1, node[subNode1.Name], "Node added was unexpected");
+            Assert.IsNotNull(node[subNode1.Id], "Sub-node one not added");
+            Assert.AreEqual<Node<StringWId, string>>(subNode1, node[subNode1.Id], "Node added was unexpected");
             Assert.AreEqual<int>(expectedNodeCount, node.NodesCount, "Sub-node added more than once");
         }
 
@@ -411,11 +384,11 @@ namespace GraphTest
         public void AddTest_MultipleNodesOneIsRepeated_GoodResultNoRepetition()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
-            var subNode1 = new Node("Sub-Node 1");
-            var subNode2 = new Node("Sub-Node 2");
-            var subNode3 = new Node("Sub-Node 3");
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            var subNode2 = new Node<StringWId, string>(new StringWId("Sub-Node 2"));
+            var subNode3 = new Node<StringWId, string>(new StringWId("Sub-Node 3"));
 
             // Expected Values
             int expectedNodeCount = 3;
@@ -427,8 +400,8 @@ namespace GraphTest
             node.Add(subNode1);
 
             // Verification
-            Assert.IsNotNull(node[subNode1.Name], "Sub-node one not added");
-            Assert.AreEqual<Node>(subNode1, node[subNode1.Name], "Node added was unexpected");
+            Assert.IsNotNull(node[subNode1.Id], "Sub-node one not added");
+            Assert.AreEqual<Node<StringWId, string>>(subNode1, node[subNode1.Id], "Node added was unexpected");
             Assert.AreEqual<int>(expectedNodeCount, node.NodesCount, "Sub-node added more than once");
         }
 
@@ -441,11 +414,11 @@ namespace GraphTest
         public void RemoveTest_EmptyList_True()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name,
-                            new Node("Sub-Node 1"),
-                            new Node("Sub-Node 2"),
-                            new Node("Sub-Node 3"));
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId("Sub-Node 1")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 2")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 3")));
 
             // Expected Values
             int expectedNodeCount = 3;
@@ -469,22 +442,22 @@ namespace GraphTest
         public void RemoveTest_FirstNode_True()
         {
             // Setup
-            var name = "Root Node";
-            var subNode1 = new Node("Sub-Node 1");
-            var node = new Node(name,
+            var swi = new StringWId("Root Node");
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            var node = new Node<StringWId, string>(swi,
                             subNode1,
-                            new Node("Sub-Node 2"),
-                            new Node("Sub-Node 3"));
+                            new Node<StringWId, string>(new StringWId("Sub-Node 2")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 3")));
 
             // Expected Values
             int expectedNodeCount = 2;
 
             // Actual Test
-            bool result = node.Remove(subNode1.Name);
+            bool result = node.Remove(subNode1.Id);
 
             // Verification
             Assert.IsTrue(result, "Did not return true for Remove-ing the first sub-node");
-            Assert.IsNull(node[subNode1.Name], "Did not Remove the first sub-node");
+            Assert.IsNull(node[subNode1.Id], "Did not Remove the first sub-node");
             Assert.AreEqual<int>(expectedNodeCount, node.NodesCount, "Unexpected number of nodes after Remove-ing the first node");
         }
 
@@ -499,22 +472,22 @@ namespace GraphTest
         public void RemoveTest_NodeOtherThanFirst_True()
         {
             // Setup
-            var name = "Root Node";
-            var subNode2 = new Node("Sub-Node 2");
-            var node = new Node(name,
-                            new Node("Sub-Node 1"),
+            var swi = new StringWId("Root Node");
+            var subNode2 = new Node<StringWId, string>(new StringWId("Sub-Node 2"));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId("Sub-Node 1")),
                             subNode2,
-                            new Node("Sub-Node 3"));
+                            new Node<StringWId, string>(new StringWId("Sub-Node 3")));
 
             // Expected Values
             int expectedNodeCount = 2;
 
             // Actual Test
-            bool result = node.Remove(subNode2.Name);
+            bool result = node.Remove(subNode2.Id);
 
             // Verification
             Assert.IsTrue(result, "Did not return true for Remove-ing a sub-node");
-            Assert.IsNull(node[subNode2.Name], "Did not Remove the requested sub-node");
+            Assert.IsNull(node[subNode2.Id], "Did not Remove the requested sub-node");
             Assert.AreEqual<int>(expectedNodeCount, node.NodesCount, "Unexpected number of nodes after Remove-ing a non-first node");
         }
 
@@ -527,24 +500,24 @@ namespace GraphTest
         public void RemoveTest_MultipleNodesButNotAll_True()
         {
             // Setup
-            var name = "Root Node";
-            var subNode1 = new Node("Sub-Node 1");
-            var subNode2 = new Node("Sub-Node 2");
-            var node = new Node(name,
+            var swi = new StringWId("Root Node");
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            var subNode2 = new Node<StringWId, string>(new StringWId("Sub-Node 2"));
+            var node = new Node<StringWId, string>(swi,
                             subNode1,
                             subNode2,
-                            new Node("Sub-Node 3"));
+                            new Node<StringWId, string>(new StringWId("Sub-Node 3")));
 
             // Expected Values
             int expectedNodeCount = 1;
 
             // Actual Test
-            bool result = node.Remove(subNode1.Name, subNode2.Name);
+            bool result = node.Remove(subNode1.Id, subNode2.Id);
 
             // Verification
             Assert.IsTrue(result, "Did not return true for Remove-ing multiple sub-nodes");
-            Assert.IsNull(node[subNode1.Name], "Did not Remove the requested sub-node");
-            Assert.IsNull(node[subNode2.Name], "Did not Remove the requested sub-node");
+            Assert.IsNull(node[subNode1.Id], "Did not Remove the requested sub-node");
+            Assert.IsNull(node[subNode2.Id], "Did not Remove the requested sub-node");
             Assert.AreEqual<int>(expectedNodeCount, node.NodesCount, "Unexpected number of nodes after Remove-ing multiple nodes");
         }
 
@@ -557,11 +530,11 @@ namespace GraphTest
         public void RemoveTest_AllNodes_True()
         {
             // Setup
-            var name = "Root Node";
-            var subNode1 = new Node("Sub-Node 1");
-            var subNode2 = new Node("Sub-Node 2");
-            var subNode3 = new Node("Sub-Node 3");
-            var node = new Node(name,
+            var swi = new StringWId("Root Node");
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            var subNode2 = new Node<StringWId, string>(new StringWId("Sub-Node 2"));
+            var subNode3 = new Node<StringWId, string>(new StringWId("Sub-Node 3"));
+            var node = new Node<StringWId, string>(swi,
                             subNode1,
                             subNode2,
                             subNode3);
@@ -570,13 +543,13 @@ namespace GraphTest
             int expectedNodeCount = 0;
 
             // Actual Test
-            bool result = node.Remove(subNode1.Name, subNode2.Name, subNode3.Name);
+            bool result = node.Remove(subNode1.Id, subNode2.Id, subNode3.Id);
 
             // Verification
             Assert.IsTrue(result, "Did not return true for Remove-ing all sub-nodes");
-            Assert.IsNull(node[subNode1.Name], "Did not Remove the requested sub-node");
-            Assert.IsNull(node[subNode2.Name], "Did not Remove the requested sub-node");
-            Assert.IsNull(node[subNode3.Name], "Did not Remove the requested sub-node");
+            Assert.IsNull(node[subNode1.Id], "Did not Remove the requested sub-node");
+            Assert.IsNull(node[subNode2.Id], "Did not Remove the requested sub-node");
+            Assert.IsNull(node[subNode3.Id], "Did not Remove the requested sub-node");
             Assert.AreEqual<int>(expectedNodeCount, node.NodesCount, "Unexpected number of nodes after Remove-ing all sub-nodes");
         }
 
@@ -589,8 +562,8 @@ namespace GraphTest
         public void RemoveTest_OneSubNodeInEmptyNode_True()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
 
             // Expected Values
             int expectedNodeCount = 0;
@@ -612,9 +585,9 @@ namespace GraphTest
         public void RemoveTest_OneNonExistentSubNodeInNodeWithOneSubNode_True()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name,
-                            new Node("Sub-Node 1"));
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId("Sub-Node 1")));
 
             // Expected Values
             int expectedNodeCount = 1;
@@ -636,11 +609,11 @@ namespace GraphTest
         public void RemoveTest_OneNonExistentSubNodeInNodeWithMultipleSubNodes_True()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name,
-                            new Node("Sub-Node 1"),
-                            new Node("Sub-Node 2"),
-                            new Node("Sub-Node 3"));
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId("Sub-Node 1")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 2")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 3")));
 
             // Expected Values
             int expectedNodeCount = 3;
@@ -662,11 +635,11 @@ namespace GraphTest
         public void RemoveTest_MultipleNonExistentSubNodeInNodeWithMultipleSubNodes_True()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name,
-                            new Node("Sub-Node 1"),
-                            new Node("Sub-Node 2"),
-                            new Node("Sub-Node 3"));
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId("Sub-Node 1")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 2")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 3")));
 
             // Expected Values
             int expectedNodeCount = 3;
@@ -689,22 +662,22 @@ namespace GraphTest
         public void RemoveTest_MixedSubNodesInNodeWithMultipleSubNodes_True()
         {
             // Setup
-            var name = "Root Node";
-            var subNode1 = new Node("Sub-Node 1");
-            var node = new Node(name,
+            var swi = new StringWId("Root Node");
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            var node = new Node<StringWId, string>(swi,
                             subNode1,
-                            new Node("Sub-Node 2"),
-                            new Node("Sub-Node 3"));
+                            new Node<StringWId, string>(new StringWId("Sub-Node 2")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 3")));
 
             // Expected Values
             int expectedNodeCount = 2;
 
             // Actual Test
-            bool result = node.Remove("Inexistent Sub-node", subNode1.Name, "Another node");
+            bool result = node.Remove("Inexistent Sub-node", subNode1.Id, "Another node");
 
             // Verification
             Assert.IsFalse(result, "Did not return false for Remove-ing non-existent sub-nodes from node");
-            Assert.IsNull(node[subNode1.Name], "Did not remove existent sub-node");
+            Assert.IsNull(node[subNode1.Id], "Did not remove existent sub-node");
             Assert.AreEqual<int>(expectedNodeCount, node.NodesCount, "Unexpected number of nodes after Remove-ing multiple non-existent sub-node from node");
         }
 
@@ -717,9 +690,9 @@ namespace GraphTest
         public void ClearTest_OneSubNode_GoodResult()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name,
-                            new Node("Sub-Node 1"));
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId("Sub-Node 1")));
 
             // Expected Values
             int expectedNodeCount = 0;
@@ -740,11 +713,11 @@ namespace GraphTest
         public void ClearTest_MultipleSubNodes_GoodResult()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name,
-                            new Node("Sub-Node 1"),
-                            new Node("Sub-Node 2"),
-                            new Node("Sub-Node 3"));
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId("Sub-Node 1")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 2")),
+                            new Node<StringWId, string>(new StringWId("Sub-Node 3")));
 
             // Expected Values
             int expectedNodeCount = 0;
@@ -765,8 +738,8 @@ namespace GraphTest
         public void ClearTest_EmptyNode_GoodResult()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
 
             // Expected Values
             int expectedNodeCount = 0;
@@ -787,11 +760,11 @@ namespace GraphTest
         public void DumpTest_NoSubNodesNoIndentation_GoodResult()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
 
             // Expected Values
-            string expectedResult = name + " =>";
+            string expectedResult = swi.Id + " =>";
 
             // Actual Test
             string result = node.Dump(0);
@@ -809,11 +782,11 @@ namespace GraphTest
         public void DumpTest_NoSubNodesWithIndentation_GoodResult()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
 
             // Expected Values
-            string expectedResult = "    " + name + " =>";
+            string expectedResult = "    " + swi.Id + " =>";
 
             // Actual Test
             string result = node.Dump(1);
@@ -832,14 +805,14 @@ namespace GraphTest
         public void DumpTest_OneEmptySubNode_GoodResult()
         {
             // Setup
-            var name = "Root Node";
+            var swi = new StringWId("Root Node");
             var subNode1Name = "SubNode1";
-            var node = new Node(name,
-                            new Node(subNode1Name));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId(subNode1Name)));
             var endOfLine = " =>";
 
             // Expected Values
-            string expectedResult = name + endOfLine + "\n" +
+            string expectedResult = swi.Id + endOfLine + "\n" +
                                     "    " + subNode1Name + endOfLine;
 
             // Actual Test
@@ -859,18 +832,18 @@ namespace GraphTest
         public void DumpTest_MultipleEmptySubNode_GoodResult()
         {
             // Setup
-            var name = "Root Node";
+            var swi = new StringWId("Root Node");
             var subNode1Name = "SubNode1";
             var subNode2Name = "SubNode2";
             var subNode3Name = "SubNode3";
-            var node = new Node(name,
-                            new Node(subNode1Name),
-                            new Node(subNode2Name),
-                            new Node(subNode3Name));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId(subNode1Name)),
+                            new Node<StringWId, string>(new StringWId(subNode2Name)),
+                            new Node<StringWId, string>(new StringWId(subNode3Name)));
             var endOfLine = " =>";
 
             // Expected Values
-            string expectedResult = name + endOfLine + "\n" +
+            string expectedResult = swi.Id + endOfLine + "\n" +
                                     "    " + subNode1Name + endOfLine + "\n" +
                                     "    " + subNode2Name + endOfLine + "\n" +
                                     "    " + subNode3Name + endOfLine;
@@ -892,16 +865,16 @@ namespace GraphTest
         public void DumpTest_OneSubNodeOneSubSubNode_GoodResult()
         {
             // Setup
-            var name = "Root Node";
+            var swi = new StringWId("Root Node");
             var subNode1Name = "SubNode1";
             var subSubNode11Name = "SubNode11";
-            var node = new Node(name,
-                            new Node(subNode1Name,
-                                new Node(subSubNode11Name)));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId(subNode1Name),
+                                new Node<StringWId, string>(new StringWId(subSubNode11Name))));
             var endOfLine = " =>";
 
             // Expected Values
-            string expectedResult = name + endOfLine + "\n" +
+            string expectedResult = swi.Id + endOfLine + "\n" +
                                     "    " + subNode1Name + endOfLine + "\n" +
                                     "        " + subSubNode11Name + endOfLine;
 
@@ -915,33 +888,33 @@ namespace GraphTest
         /// <summary>A test for Dump</summary>
         /// <remarks>
         /// Test: Dump a node containing multiple sub-nodes, some of them empty, some containing
-        /// empty sub-nodes
+        /// empty sub-nodes (id is a string)
         /// Expected: One node/sub-node name per line, indented by 4 spaces per level (first line
         /// contains the node name and is not indented)
         /// </remarks>
         [TestMethod]
-        public void DumpTest_Mixed_GoodResult()
+        public void DumpTest_StringMixed_GoodResult()
         {
             // Setup
-            var name = "Root Node";
+            var swi = new StringWId("Root Node");
             var subNode1Name = "SubNode1";
             var subSubNode11Name = "SubNode11";
             var subNode2Name = "SubNode2";
             var subNode3Name = "SubNode3";
             var subSubNode31Name = "SubNode31";
             var subSubNode32Name = "SubNode32";
-            var node = new Node(name,
-                            new Node(subNode1Name,
-                                new Node(subSubNode11Name)),
-                            new Node(subNode2Name),
-                            new Node(subNode3Name,
-                                new Node(subSubNode31Name),
-                                new Node(subSubNode32Name)));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId(subNode1Name),
+                                new Node<StringWId, string>(new StringWId(subSubNode11Name))),
+                            new Node<StringWId, string>(new StringWId(subNode2Name)),
+                            new Node<StringWId, string>(new StringWId(subNode3Name),
+                                new Node<StringWId, string>(new StringWId(subSubNode31Name)),
+                                new Node<StringWId, string>(new StringWId(subSubNode32Name))));
             var endOfResult = " =>";
             var endOfLine = endOfResult + "\n";
 
             // Expected Values
-            string expectedResult = name + endOfLine +
+            string expectedResult = swi.Id + endOfLine +
                                     "    " + subNode1Name + endOfLine +
                                     "        " + subSubNode11Name + endOfLine +
                                     "    " + subNode2Name + endOfLine +
@@ -956,141 +929,185 @@ namespace GraphTest
             Assert.AreEqual<string>(expectedResult, result, "Unexpected result for Dump(0) in node with a mix of sub-nodes and sub-sub-nodes");
         }
 
-        /// <summary>A test for DumpByName</summary>
+        /// <summary>A test for Dump</summary>
+        /// <remarks>
+        /// Test: Dump a node containing multiple sub-nodes, some of them empty, some containing
+        /// empty sub-nodes (id is a number)
+        /// Expected: One node/sub-node name per line, indented by 4 spaces per level (first line
+        /// contains the node name and is not indented)
+        /// </remarks>
+        [TestMethod]
+        public void DumpTest_IntMixed_GoodResult()
+        {
+            // Setup
+            var swi = new NumberWId(0, 0.1, "_");
+            var subNode1Id = 1;
+            var subSubNode11Id = 11;
+            var subNode2Id = 2;
+            var subNode3Id = 3;
+            var subSubNode31Id = 31;
+            var subSubNode32Id = 32;
+            var node = new Node<NumberWId, int>(swi,
+                            new Node<NumberWId, int>(new NumberWId(subNode1Id, 1.1, "a"),
+                                new Node<NumberWId, int>(new NumberWId(subSubNode11Id, 11.11, "aa"))),
+                            new Node<NumberWId, int>(new NumberWId(subNode2Id, 2.2, "b")),
+                            new Node<NumberWId, int>(new NumberWId(subNode3Id, 3.3, "c"),
+                                new Node<NumberWId, int>(new NumberWId(subSubNode31Id, 31.31, "ca")),
+                                new Node<NumberWId, int>(new NumberWId(subSubNode32Id, 32.32, "cb"))));
+            var endOfResult = " =>";
+            var endOfLine = endOfResult + "\n";
+
+            // Expected Values
+            string expectedResult = swi.Id + endOfLine +
+                                    "    " + subNode1Id + endOfLine +
+                                    "        " + subSubNode11Id + endOfLine +
+                                    "    " + subNode2Id + endOfLine +
+                                    "    " + subNode3Id + endOfLine +
+                                    "        " + subSubNode31Id + endOfLine +
+                                    "        " + subSubNode32Id + endOfResult;
+
+            // Actual Test
+            string result = node.Dump(0);
+
+            // Verification
+            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for Dump(0) in node with a mix of sub-nodes and sub-sub-nodes");
+        }
+
+        /// <summary>A test for DumpById</summary>
         /// <remarks>
         /// Test: Dump an empty node, set indentation level to zero
         /// Expected: One line containing the node name, no indentation.
         /// </remarks>
         [TestMethod]
-        public void DumpByNameTest_NoSubNodesNoIndentation_GoodResult()
+        public void DumpByIdTest_NoSubNodesNoIndentation_GoodResult()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
 
             // Expected Values
-            string expectedResult = name + " =>";
+            string expectedResult = swi.Id + " =>";
 
             // Actual Test
-            string result = node.DumpByName(0);
+            string result = node.DumpById(0);
 
             // Verification
-            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpByName(0) in empty node");
+            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpById(0) in empty node");
         }
 
-        /// <summary>A test for DumpByName</summary>
+        /// <summary>A test for DumpById</summary>
         /// <remarks>
         /// Test: Dump an empty node, set indentation level to one
         /// Expected: One line containing the node name, indented by 4 spaces
         /// </remarks>
         [TestMethod]
-        public void DumpByNameTest_NoSubNodesWithIndentation_GoodResult()
+        public void DumpByIdTest_NoSubNodesWithIndentation_GoodResult()
         {
             // Setup
-            var name = "Root Node";
-            var node = new Node(name);
+            var swi = new StringWId("Root Node");
+            var node = new Node<StringWId, string>(swi);
 
             // Expected Values
-            string expectedResult = "    " + name + " =>";
+            string expectedResult = "    " + swi.Id + " =>";
 
             // Actual Test
-            string result = node.DumpByName(1);
+            string result = node.DumpById(1);
 
             // Verification
-            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpByName(1) in empty node");
+            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpById(1) in empty node");
         }
 
-        /// <summary>A test for DumpByName</summary>
+        /// <summary>A test for DumpById</summary>
         /// <remarks>
         /// Test: Dump a node containing a single empty node, set indentation level to zero
         /// Expected: One line containing the node name, no indentation; one containing the sub-node
         /// name, one level of indentation (4 spaces)
         /// </remarks>
         [TestMethod]
-        public void DumpByNameTest_OneEmptySubNode_GoodResult()
+        public void DumpByIdTest_OneEmptySubNode_GoodResult()
         {
             // Setup
-            var name = "Root Node";
+            var swi = new StringWId("Root Node");
             var subNode1Name = "SubNode1";
-            var node = new Node(name,
-                            new Node(subNode1Name));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId(subNode1Name)));
             var endOfLine = " =>";
 
             // Expected Values
-            string expectedResult = name + endOfLine + "\n" +
+            string expectedResult = swi.Id + endOfLine + "\n" +
                                     "    " + subNode1Name + endOfLine;
 
             // Actual Test
-            string result = node.DumpByName(0);
+            string result = node.DumpById(0);
 
             // Verification
-            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpByName(0) in node with one empty sub-node");
+            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpById(0) in node with one empty sub-node");
         }
 
-        /// <summary>A test for DumpByName</summary>
+        /// <summary>A test for DumpById</summary>
         /// <remarks>
         /// Test: Dump a node containing three empty sub-node, set indentation level to zero
         /// Expected: One line containing the node name, no indentation; one additional line per
         /// sub-node name, all sub-nodes at the same level of indentation (4 spaces)
         /// </remarks>
         [TestMethod]
-        public void DumpByNameTest_MultipleEmptySubNode_GoodResult()
+        public void DumpByIdTest_MultipleEmptySubNode_GoodResult()
         {
             // Setup
-            var name = "Root Node";
+            var swi = new StringWId("Root Node");
             var subNode1Name = "C_SubNode1";
             var subNode2Name = "B_SubNode2";
             var subNode3Name = "A_SubNode3";
-            var node = new Node(name,
-                            new Node(subNode1Name),
-                            new Node(subNode2Name),
-                            new Node(subNode3Name));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId(subNode1Name)),
+                            new Node<StringWId, string>(new StringWId(subNode2Name)),
+                            new Node<StringWId, string>(new StringWId(subNode3Name)));
             var endOfLine = " =>";
 
             // Expected Values
-            string expectedResult = name + endOfLine + "\n" +
+            string expectedResult = swi.Id + endOfLine + "\n" +
                                     "    " + subNode3Name + endOfLine + "\n" +
                                     "    " + subNode2Name + endOfLine + "\n" +
                                     "    " + subNode1Name + endOfLine;
 
             // Actual Test
-            string result = node.DumpByName(0);
+            string result = node.DumpById(0);
 
             // Verification
-            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpByName(0) in node with multiple empty sub-nodes");
+            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpById(0) in node with multiple empty sub-nodes");
         }
 
-        /// <summary>A test for DumpByName</summary>
+        /// <summary>A test for DumpById</summary>
         /// <remarks>
         /// Test: Dump a node containing one sub-node, which contains one sub-node
         /// Expected: One line containing the node name, no indentation; one line for the sub-node
         /// name, indented at 4 spaces; one line for the sub-sub-node name, indented at 8 spaces
         /// </remarks>
         [TestMethod]
-        public void DumpByNameTest_OneSubNodeOneSubSubNode_GoodResult()
+        public void DumpByIdTest_OneSubNodeOneSubSubNode_GoodResult()
         {
             // Setup
-            var name = "Root Node";
+            var swi = new StringWId("Root Node");
             var subNode1Name = "Z_SubNode1";
             var subSubNode11Name = "A_SubNode11";
-            var node = new Node(name,
-                            new Node(subNode1Name,
-                                new Node(subSubNode11Name)));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId(subNode1Name),
+                                new Node<StringWId, string>(new StringWId(subSubNode11Name))));
             var endOfLine = " =>";
 
             // Expected Values
-            string expectedResult = name + endOfLine + "\n" +
+            string expectedResult = swi.Id + endOfLine + "\n" +
                                     "    " + subNode1Name + endOfLine + "\n" +
                                     "        " + subSubNode11Name + endOfLine;
 
             // Actual Test
-            string result = node.DumpByName(0);
+            string result = node.DumpById(0);
 
             // Verification
-            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpByName(0) in node with one sub-node with one empty sub-sub-node");
+            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpById(0) in node with one sub-node with one empty sub-sub-node");
         }
 
-        /// <summary>A test for DumpByName</summary>
+        /// <summary>A test for DumpById</summary>
         /// <remarks>
         /// Test: Dump a node containing multiple sub-nodes, some of them empty, some containing
         /// empty sub-nodes
@@ -1098,28 +1115,28 @@ namespace GraphTest
         /// contains the node name and is not indented)
         /// </remarks>
         [TestMethod]
-        public void DumpByNameTest_Mixed_GoodResult()
+        public void DumpByIdTest_Mixed_GoodResult()
         {
             // Setup
-            var name = "Root Node";
+            var swi = new StringWId("Root Node");
             var subNode1Name = "C_SubNode1";
             var subSubNode11Name = "CA_SubNode11";
             var subNode2Name = "B_SubNode2";
             var subNode3Name = "A_SubNode3";
             var subSubNode31Name = "AZSubNode31";
             var subSubNode32Name = "AA_SubNode32";
-            var node = new Node(name,
-                            new Node(subNode1Name,
-                                new Node(subSubNode11Name)),
-                            new Node(subNode2Name),
-                            new Node(subNode3Name,
-                                new Node(subSubNode31Name),
-                                new Node(subSubNode32Name)));
+            var node = new Node<StringWId, string>(swi,
+                            new Node<StringWId, string>(new StringWId(subNode1Name),
+                                new Node<StringWId, string>(new StringWId(subSubNode11Name))),
+                            new Node<StringWId, string>(new StringWId(subNode2Name)),
+                            new Node<StringWId, string>(new StringWId(subNode3Name),
+                                new Node<StringWId, string>(new StringWId(subSubNode31Name)),
+                                new Node<StringWId, string>(new StringWId(subSubNode32Name))));
             var endOfResult = " =>";
             var endOfLine = endOfResult + "\n";
 
             // Expected Values
-            string expectedResult = name + endOfLine +
+            string expectedResult = swi.Id + endOfLine +
                                     "    " + subNode3Name + endOfLine +
                                     "        " + subSubNode32Name + endOfLine +
                                     "        " + subSubNode31Name + endOfLine +
@@ -1128,11 +1145,55 @@ namespace GraphTest
                                     "        " + subSubNode11Name + endOfResult;
 
             // Actual Test
-            string result = node.DumpByName(0);
+            string result = node.DumpById(0);
 
             // Verification
-            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpByName(0) in node with a mix of sub-nodes and sub-sub-nodes");
+            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for DumpById(0) in node with a mix of sub-nodes and sub-sub-nodes");
         }
+        /// <summary>A test for Dump</summary>
+        /// <remarks>
+        /// Test: Dump a node containing multiple sub-nodes, some of them empty, some containing
+        /// empty sub-nodes (id is a number)
+        /// Expected: One node/sub-node name per line, indented by 4 spaces per level (first line
+        /// contains the node name and is not indented)
+        /// </remarks>
+        [TestMethod]
+        public void DumpByIdTest_IntMixed_GoodResult()
+        {
+            // Setup
+            var swi = new NumberWId(70, 0.1, "_");
+            var subNode1Id = 61;
+            var subSubNode11Id = 511;
+            var subNode2Id = 42;
+            var subNode3Id = 33;
+            var subSubNode31Id = 231;
+            var subSubNode32Id = 132;
+            var node = new Node<NumberWId, int>(swi,
+                            new Node<NumberWId, int>(new NumberWId(subNode1Id, 1.1, "a"),
+                                new Node<NumberWId, int>(new NumberWId(subSubNode11Id, 11.11, "aa"))),
+                            new Node<NumberWId, int>(new NumberWId(subNode2Id, 2.2, "b")),
+                            new Node<NumberWId, int>(new NumberWId(subNode3Id, 3.3, "c"),
+                                new Node<NumberWId, int>(new NumberWId(subSubNode31Id, 31.31, "ca")),
+                                new Node<NumberWId, int>(new NumberWId(subSubNode32Id, 32.32, "cb"))));
+            var endOfResult = " =>";
+            var endOfLine = endOfResult + "\n";
+
+            // Expected Values
+            string expectedResult = swi.Id + endOfLine +
+                                    "    " + subNode3Id + endOfLine +
+                                    "        " + subSubNode32Id + endOfLine +
+                                    "        " + subSubNode31Id + endOfLine +
+                                    "    " + subNode2Id + endOfLine +
+                                    "    " + subNode1Id + endOfLine +
+                                    "        " + subSubNode11Id + endOfResult;
+
+            // Actual Test
+            string result = node.DumpById(0);
+
+            // Verification
+            Assert.AreEqual<string>(expectedResult, result, "Unexpected result for Dump(0) in node with a mix of sub-nodes and sub-sub-nodes");
+        }
+
 
     }
 }
