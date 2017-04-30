@@ -278,7 +278,58 @@ namespace GraphTest
             int actualNodeCount = node.NodesCount;
 
             // Verification
+            Assert.AreEqual<int>(expectedNodeCount, actualNodeCount, "Wrong count for 3 sub-nodes");
+        }
+
+        /// <summary>A test for SubNodes</summary>
+        /// <remarks>
+        /// Test: Node has no subnodes
+        /// Expected:
+        /// </remarks>
+        [TestMethod]
+        public void SubNodesTest_NoSubNodes_EmptyList()
+        {
+            // Setup
+            var swi = new StringWId("NodeName");
+            var node = new Node<StringWId, string>(swi);
+
+            // Expected Values
+            int expectedNodeCount = 0;
+
+            // Actual Test
+            int actualNodeCount = node.SubNodes.Count;
+
+            // Verification
             Assert.AreEqual<int>(expectedNodeCount, actualNodeCount, "Wrong count for no sub-nodes");
+        }
+
+        /// <summary>A test for SubNodes</summary>
+        /// <remarks>
+        /// Test: Node has multiple subnodes
+        /// Expected: A list containing all subnodes
+        /// </remarks>
+        [TestMethod]
+        public void SubNodesTest_MultipleSubNodes_GoodResult()
+        {
+            // Setup
+            var swi = new StringWId("NodeName");
+            var subNode1 = new Node<StringWId, string>(new StringWId("Sub-Node 1"));
+            var subNode2 = new Node<StringWId, string>(new StringWId("Sub-Node 2"));
+            var subNode3 = new Node<StringWId, string>(new StringWId("Sub-Node 3"));
+            var node = new Node<StringWId, string>(swi, subNode1, subNode2, subNode3);
+
+            // Expected Values
+            int expectedNodeCount = 3;
+
+            // Actual Test
+            var resultingList = node.SubNodes;
+            int actualNodeCount = resultingList.Count;
+
+            // Verification
+            Assert.AreEqual<int>(expectedNodeCount, actualNodeCount, "Wrong count for 3 sub-nodes");
+            CollectionAssert.Contains(resultingList, subNode1, "List does not contain subNode1");
+            CollectionAssert.Contains(resultingList, subNode2, "List does not contain subNode2");
+            CollectionAssert.Contains(resultingList, subNode3, "List does not contain subNode3");
         }
 
         /// <summary>A test for the method Add</summary>
