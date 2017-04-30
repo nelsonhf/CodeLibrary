@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphTest", "GraphTest\Grap
 		{E98B20F2-5AE7-4A7F-9FA6-D86D8E1A71F0} = {E98B20F2-5AE7-4A7F-9FA6-D86D8E1A71F0}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrokkingAlgorithms", "Examples\Grokking Algorithms\GrokkingAlgorithms.csproj", "{EFA6F15B-8E98-4326-A169-413BFBA6C516}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{A3DD19CB-1728-4C90-879A-85499570C504}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3DD19CB-1728-4C90-879A-85499570C504}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3DD19CB-1728-4C90-879A-85499570C504}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA6F15B-8E98-4326-A169-413BFBA6C516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA6F15B-8E98-4326-A169-413BFBA6C516}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA6F15B-8E98-4326-A169-413BFBA6C516}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA6F15B-8E98-4326-A169-413BFBA6C516}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
