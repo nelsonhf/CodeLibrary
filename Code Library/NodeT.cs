@@ -1,11 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CodeLibrary
 {
+    /// <summary>
+    /// Models a node in a graph that contains an object of type T; this object must have an id of
+    /// type I, which must be unique in the domain.
+    /// </summary>
+    /// <typeparam name="T">Type of the object contained in the node</param>
+    /// <typeparam name="I">Type of the unique identifier for the object</param>
+    /// <seealso cref="IIdentifiable<I>"
     public class Node<T, I> where T : IIdentifiable<I>
     {
         /// <summary>Object in this node</summary>
@@ -43,6 +51,17 @@ namespace CodeLibrary
             ThisNode = root;
             m_nodes = new Dictionary<I, Node<T, I>>();
             Add(other);
+        }
+
+        /// <summary>
+        /// List of subnodes of this node. May be empty (but never null!)
+        /// </summary>
+        public List<Node<T,I>> SubNodes
+        {
+            get
+            {
+                return m_nodes.Values.ToList();
+            }
         }
 
         /// <summary>Add sub-nodes to this node</summary>
