@@ -46,6 +46,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# ==============================
+# Compiler (Visual Studio) Files
+# ==============================
+
 # Files compiled from source
 **/obj/**
 **/bin/**
@@ -53,11 +57,17 @@ Temporary Items
 # Result of unit tests
 **/TestResults/**
 
-# Internal SlickEdit files (modified too often)
+# Backup files (no need to send to the repository)
+*.bak
+
+# Configuration files
+.vs
+.axoCover
+
+# ==============================
+# Editor (Slick Edit) Files
+# ==============================
 *.vtg
 *.vpw
 *.vpwhist
 
-*.bak
-*.vpwhist
-*.vtg
