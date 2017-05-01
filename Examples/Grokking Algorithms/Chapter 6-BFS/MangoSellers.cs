@@ -1,3 +1,7 @@
+using CodeLibrary;
+using System;
+using System.Collections.Generic;
+
 public static class MangoSellers
 {
     public static void Example()
@@ -24,9 +28,12 @@ public static class MangoSellers
 
         var toCheck = new Queue<Node<Friend,string>>();
         toCheck.Enqueue(graph);
+        var done = new List<string>(); // Remove duplicates
         while (toCheck.Count != 0)
         {
             var thisOne = toCheck.Dequeue();
+            if (done.Contains(thisOne.Id)) continue;
+
             if (thisOne.ThisNode.SellsMango)
             {
                 Console.WriteLine($"{thisOne.Id} sells mangoes!");
@@ -36,6 +43,8 @@ public static class MangoSellers
             {
                 Console.WriteLine($"Bad Luck! {thisOne.Id} does not sell mangoes!");
             }
+
+            done.Add(thisOne.Id);
             foreach (var node in thisOne.SubNodes)
             {
                 toCheck.Enqueue(node);
